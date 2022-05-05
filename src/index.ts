@@ -106,7 +106,7 @@ const xAppActionAttempt = async (
   }
 };
 
-export class xApp extends EventEmitter {
+export default class xAppSdk extends EventEmitter {
   // private rnWebViewReadyTimeout: ReturnType<typeof setTimeout> = null;
 
   constructor() {
@@ -114,7 +114,7 @@ export class xApp extends EventEmitter {
 
     log("Constructed new xApp object");
     log(
-      "(Document ready state during constructing: " + document.readyState + ")"
+      "(Document ready state during consteructing: " + document.readyState + ")"
     );
     if (document.readyState === "complete") {
       documentIsReady();
