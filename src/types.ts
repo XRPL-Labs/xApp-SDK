@@ -74,6 +74,12 @@ export interface xAppActionClose {
   refreshEvents?: boolean;
 }
 
+export interface xAppActionTxDetails {
+  // command: txDetails
+  tx: string;
+  account: string;
+}
+
 // export interface xAppActionSelectDestination {
 //   // command: selectDestination
 // }

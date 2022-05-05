@@ -6,6 +6,7 @@ import {
   xAppActionNavigate,
   xAppActionOpenSignRequest,
   xAppActionOpenBrowser,
+  xAppActionTxDetails,
   xAppActionClose,
   xAppEvents,
   xAppReceivedEvent,
@@ -63,7 +64,8 @@ const xAppActionAttempt = async (
     | xAppActionNavigate
     | xAppActionOpenSignRequest
     | xAppActionOpenBrowser
-    | xAppActionClose,
+    | xAppActionClose
+    | xAppActionTxDetails,
   attempt = 0
 ): Promise<boolean | Error> => {
   await documentReadyPromise;
@@ -211,6 +213,16 @@ export class xApp extends EventEmitter {
 
   scanQr(): Promise<boolean | Error> {
     return xAppActionAttempt("scanQr");
+  }
+
+  tx(txOptions: xAppActionTxDetails): Promise<boolean | Error> {
+    if (typeof txOptions?.tx !== "string") {
+      return Promise.reject(new Error("xApp.tx: Invalid argument: `tx`"));
+    }
+    if (typeof txOptions?.account !== "string") {
+      return Promise.reject(new Error("xApp.tx: Invalid argument: `account`"));
+    }
+    return xAppActionAttempt("txDetails", txOptions);
   }
 
   close(closeOptions?: xAppActionClose): Promise<boolean | Error> {
