@@ -1,0 +1,70 @@
+{
+  "name": "xumm-xapp-sdk",
+  "version": "1.0.0",
+  "description": "Xumm JS SDK for xApps",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "prepare": "npm run clean && npm run lint && npm run test && npm run build && npm run browserify",
+    "clean": "rm -rf dist",
+    "build": "tsc",
+    "serve": "npm run build && npm run browserify && serve -C -n -p 3001 ./dist/",
+    "watch": "tsc -w",
+    "dev": "clear && npm run build && DEBUG=xapp* nodemon --watch dist dist/samples/sample.js",
+    "inspect": "clear && npm run build && node --inspect dist/samples/sample.js",
+    "browserify": "browserify -r ./dist/index.js:xapp -o dist/browser.js && npm run minify",
+    "minify": "cat dist/browser.js | terser --compress --mangle > dist/browser.min.js",
+    "test": "DEBUG=xapp:tests* jest --ci",
+    "test-verbose": "DEBUG=xapp:tests* jest --ci --verbose",
+    "lint": "eslint"
+  },
+  "files": [
+    "dist/src/**/*.js",
+    "dist/src/**/*.d.ts",
+    "dist/browser.js",
+    "dist/browser.min.js"
+  ],
+  "dependencies": {
+    "debug": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/jest": "^26.0.12",
+    "@types/node": "^12.12.55",
+    "@types/websocket": "^1.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
+    "browserify": "^16.5.2",
+    "eslint": "^7.27.0",
+    "jest": "^26.4.2",
+    "serve": "^13.0.2",
+    "terser": "^5.3.4",
+    "ts-jest": "^26.3.0",
+    "typescript": "^4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com:XRPL-Labs/xumm-xapp-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/XRPL-Labs/xumm-xapp-sdk/issues"
+  },
+  "homepage": "https://github.com/XRPL-Labs/xumm-xapp-sdk/#readme",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "keywords": [
+    "xrp",
+    "xrpl",
+    "ledger",
+    "xumm",
+    "sdk",
+    "xapp",
+    "client"
+  ],
+  "nodemonConfig": {
+    "ignore": [
+      "test/*"
+    ],
+    "delay": 750
+  }
+}
