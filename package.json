@@ -12,7 +12,7 @@
     "watch": "tsc -w",
     "dev": "clear && npm run build && DEBUG=xapp* nodemon --watch dist dist/samples/sample.js",
     "inspect": "clear && npm run build && node --inspect dist/samples/sample.js",
-    "browserify": "browserify -r ./dist/index.js:xapp -o dist/browser.js && npm run minify",
+    "browserify": "browserify -r ./dist/index.js:xumm-xapp-sdk -o dist/browser.js && npm run minify",
     "minify": "cat dist/browser.js | terser --compress --mangle > dist/browser.min.js",
     "test": "DEBUG=xapp:tests* jest --ci",
     "test-verbose": "DEBUG=xapp:tests* jest --ci --verbose",
