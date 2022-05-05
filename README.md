@@ -1,4 +1,4 @@
-# Xumm xApp Javascript SDK
+# Xumm xApp Javascript SDK [![npm version](https://badge.fury.io/js/xumm-xapp-sdk.svg)](https://badge.fury.io/js/xumm-xapp-sdk)
 
 Easily interact with Xumm from your xApp (frontend).
 
