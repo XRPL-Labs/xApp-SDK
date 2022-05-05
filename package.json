@@ -44,12 +44,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com:XRPL-Labs/xumm-xapp-sdk.git"
+    "url": "git://github.com:XRPL-Labs/xApp-SDK.git"
   },
   "bugs": {
-    "url": "https://github.com/XRPL-Labs/xumm-xapp-sdk/issues"
+    "url": "https://github.com/XRPL-Labs/xApp-SDK/issues"
   },
-  "homepage": "https://github.com/XRPL-Labs/xumm-xapp-sdk/#readme",
+  "homepage": "https://github.com/XRPL-Labs/xApp-SDK/#readme",
   "license": "MIT",
   "readmeFilename": "README.md",
   "keywords": [
