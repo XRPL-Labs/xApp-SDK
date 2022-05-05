@@ -106,9 +106,7 @@ const xAppActionAttempt = async (
   }
 };
 
-export default class xAppSdk extends EventEmitter {
-  // private rnWebViewReadyTimeout: ReturnType<typeof setTimeout> = null;
-
+export class xApp extends EventEmitter {
   constructor() {
     super();
 
@@ -219,3 +217,6 @@ export default class xAppSdk extends EventEmitter {
     return xAppActionAttempt("close", closeOptions);
   }
 }
+
+// Export UMD compatible
+module.exports = exports["xApp"];
