@@ -229,6 +229,3 @@ export class xApp extends EventEmitter {
     return xAppActionAttempt("close", closeOptions);
   }
 }
-
-// Export UMD compatible
-module.exports = exports["xApp"];

@@ -1,4 +1,4 @@
-import { xApp } from "../dist/";
+import { xApp } from "../src/index";
 
 describe(`Tests: TODO`, () => {
   const sdk = new xApp();
