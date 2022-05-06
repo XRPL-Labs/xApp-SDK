@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 import { debug as Debug } from "debug";
 
 import {
+  AnyJson,
   xAppEvent,
   xAppActionNavigate,
   xAppActionOpenSignRequest,
@@ -65,7 +66,8 @@ const xAppActionAttempt = async (
     | xAppActionOpenSignRequest
     | xAppActionOpenBrowser
     | xAppActionClose
-    | xAppActionTxDetails,
+    | xAppActionTxDetails
+    | AnyJson,
   attempt = 0
 ): Promise<boolean | Error> => {
   await documentReadyPromise;
@@ -227,5 +229,12 @@ export class xApp extends EventEmitter {
 
   close(closeOptions?: xAppActionClose): Promise<boolean | Error> {
     return xAppActionAttempt("close", closeOptions);
+  }
+
+  customCommand(
+    customCommand: string,
+    customCommandOptions?: AnyJson
+  ): Promise<boolean | Error> {
+    return xAppActionAttempt(customCommand, customCommandOptions);
   }
 }
