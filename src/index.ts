@@ -75,8 +75,7 @@ const xAppActionAttempt = async (
   const _window = window as xAppDomWindow;
   if (typeof _window?.ReactNativeWebView !== "undefined") {
     _window.ReactNativeWebView?.postMessage(
-      JSON.stringify({ command, ...(options || {}) }),
-      "*"
+      JSON.stringify({ command, ...(options || {}) })
     );
     log("xAppActionAttempt Success", command, options);
 

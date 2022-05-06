@@ -1,7 +1,9 @@
 export type AnyJson = Record<string, any>;
 
-export interface xAppDomWindow extends Window {
-  ReactNativeWebView?: Window;
+export interface xAppDomWindow {
+  ReactNativeWebView?: {
+    postMessage(message: any): void; // Required, Android doesn't accept 2nd argument
+  };
 }
 
 export enum xAppEvents {
