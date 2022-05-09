@@ -2,15 +2,15 @@
 
 Easily interact with Xumm from your xApp (frontend).
 
-See: https://xumm.readme.io/docs/xapp-xumm-ui-interaction
+Documentation: see: https://xumm.readme.io/docs/xapp-xumm-ui-interaction
 
 NPM:
 [https://www.npmjs.com/package/xumm-xapp-sdk](https://www.npmjs.com/package/xumm-xapp-sdk)
 
-### CDN:
+### CDN (browser):
 
-[https://cdn.jsdelivr.net/npm/xumm-xapp-sdk/dist/browser.min.js](https://cdn.jsdelivr.net/npm/xumm-xapp-sdk/dist/browser.min.js)
+A browserified version (latest) is available at [JSDelivr](https://cdn.jsdelivr.net/npm/xumm-xapp-sdk/dist/browser.min.js) & direclty from the `xumm.app` domain:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/xumm-xapp-sdk@1.0.0/dist/browser.min.js"></script>
+<script src="https://xumm.app/assets/cdn/xumm-xapp-sdk.min.js"></script>
 ```
