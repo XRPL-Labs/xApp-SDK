@@ -1,6 +1,6 @@
 {
   "name": "xumm-xapp-sdk",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Xumm JS SDK for xApps",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
