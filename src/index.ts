@@ -25,12 +25,28 @@ localStorage.debug = "xapp*";
 const attemptMs = 250;
 const attemptDuration = 2000;
 
+const appStart = Number(new Date());
+
 Debug.log = console.log.bind(console);
 const log = Debug("xapp");
 
 let documentIsReady: (value?: unknown) => void;
 const documentReadyPromise = new Promise((resolve) => {
-  documentIsReady = resolve;
+  documentIsReady = (value) => {
+    log("Doc Ready...");
+    const timeSinceDocLoad = (Number(new Date()) - appStart) / 1000;
+    if (timeSinceDocLoad < 2 /* Seconds */) {
+      // Stall
+      log("Doc not alive >= 2 sec, stalling for " + (2 - timeSinceDocLoad));
+      setTimeout(function () {
+        resolve(value);
+      }, (2 - timeSinceDocLoad) * 1000);
+    } else {
+      // Go ahead
+      log("Doc alive 2+ sec, go ahead");
+      resolve(value);
+    }
+  };
 });
 
 documentReadyPromise
@@ -74,6 +90,24 @@ const xAppActionAttempt = async (
 
   const _window = window as xAppDomWindow;
   if (typeof _window?.ReactNativeWebView !== "undefined") {
+    const timeSinceDocLoad = (Number(new Date()) - appStart) / 1000;
+
+    if (["close"].indexOf(command) > -1) {
+      // Close command awaits app nav state, min sec. alive 4
+      const minAliveTimeSec = 4;
+      if (timeSinceDocLoad < minAliveTimeSec) {
+        log(
+          "xApp close, doc alive < minAliveTimeSec, stall: " +
+            (minAliveTimeSec - timeSinceDocLoad)
+        );
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(true);
+          }, (minAliveTimeSec - timeSinceDocLoad) * 1000);
+        });
+      }
+    }
+
     _window.ReactNativeWebView?.postMessage(
       JSON.stringify({ command, ...(options || {}) })
     );
