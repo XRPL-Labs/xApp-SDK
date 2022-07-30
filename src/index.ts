@@ -22,6 +22,7 @@ export * from "./types";
 
 localStorage.debug = "xapp*";
 
+const docMinAliveSec = 1
 const attemptMs = 250;
 const attemptDuration = 2000;
 
@@ -35,15 +36,15 @@ const documentReadyPromise = new Promise((resolve) => {
   documentIsReady = (value) => {
     log("Doc Ready...");
     const timeSinceDocLoad = (Number(new Date()) - appStart) / 1000;
-    if (timeSinceDocLoad < 2 /* Seconds */) {
+    if (timeSinceDocLoad < docMinAliveSec /* Seconds */) {
       // Stall
-      log("Doc not alive >= 2 sec, stalling for " + (2 - timeSinceDocLoad));
+      log("Doc not alive >= " + docMinAliveSec + " sec, stalling for " + (docMinAliveSec - timeSinceDocLoad));
       setTimeout(function () {
         resolve(value);
-      }, (2 - timeSinceDocLoad) * 1000);
+      }, (docMinAliveSec - timeSinceDocLoad) * 1000);
     } else {
       // Go ahead
-      log("Doc alive 2+ sec, go ahead");
+      log("Doc alive " + docMinAliveSec + "+ sec, go ahead");
       resolve(value);
     }
   };
@@ -75,6 +76,13 @@ export declare interface xApp {
   // ): boolean;
 }
 
+let _window = window as xAppDomWindow;
+let isSandbox = false
+if (_window?.parent) {
+  // XAPP PROXY
+  _window.parent?.postMessage('XAPP_PROXY_INIT', '*');
+}
+
 const xAppActionAttempt = async (
   command: string,
   options?:
@@ -88,8 +96,7 @@ const xAppActionAttempt = async (
 ): Promise<boolean | Error> => {
   await documentReadyPromise;
 
-  const _window = window as xAppDomWindow;
-  if (typeof _window?.ReactNativeWebView !== "undefined") {
+  if (typeof _window?.ReactNativeWebView !== "undefined" || isSandbox) {
     const timeSinceDocLoad = (Number(new Date()) - appStart) / 1000;
 
     if (["close"].indexOf(command) > -1) {
@@ -108,9 +115,16 @@ const xAppActionAttempt = async (
       }
     }
 
-    _window.ReactNativeWebView?.postMessage(
-      JSON.stringify({ command, ...(options || {}) })
-    );
+    if (isSandbox) {
+      _window.parent?.postMessage(
+        JSON.stringify({ command, ...(options || {}) }),
+        "*"
+      );
+    } else {
+      _window.ReactNativeWebView?.postMessage(
+        JSON.stringify({ command, ...(options || {}) })
+      );
+    }
     log("xAppActionAttempt Success", command, options);
 
     return true;
@@ -156,40 +170,55 @@ export class xApp extends EventEmitter {
     }
 
     const eventHandler = (event: Event): void => {
-      const _event: xAppReceivedEventData = JSON.parse(
-        (event as xAppReceivedEvent)?.data || "{}"
-      );
+      const rEvent = (event as xAppReceivedEvent)
 
-      log({ _event });
+      if (typeof rEvent?.data === "string" && rEvent.data === "XAPP_PROXY_INIT_ACK") {
+        log("xApp Proxy ACK received, switching to PROXY (SANDBOX) mode");
+        isSandbox = true
+        return
+      }
 
-      if (typeof _event === "object" && _event !== null) {
-        if (typeof _event.method === "string" && _event.method in xAppEvents) {
-          log("xApp Event received", _event.method, _event);
+      try {
+        const _event: xAppReceivedEventData = JSON.parse(
+          rEvent?.data || "{}"
+        );
 
-          const method = _event.method;
-          delete _event.method;
+        log({ _event });
 
-          switch (method) {
-            case String(xAppEvents.payloadResolved):
-              this.emit("payload", _event as unknown as payloadEventData);
-              break;
-            case String(xAppEvents.scanQr):
-              this.emit("qr", _event as unknown as qrEventData);
-              break;
-            case String(xAppEvents.selectDestination):
-              this.emit(
-                "destination",
-                _event as unknown as destinationEventData
-              );
-              break;
+        if (typeof _event === "object" && _event !== null) {
+          if (typeof _event.method === "string" && _event.method in xAppEvents) {
+            log("xApp Event received", _event.method, _event);
+
+            const method = _event.method;
+            delete _event.method;
+
+            switch (method) {
+              case String(xAppEvents.payloadResolved):
+                this.emit("payload", _event as unknown as payloadEventData);
+                break;
+              case String(xAppEvents.scanQr):
+                this.emit("qr", _event as unknown as qrEventData);
+                break;
+              case String(xAppEvents.selectDestination):
+                this.emit(
+                  "destination",
+                  _event as unknown as destinationEventData
+                );
+                break;
+            }
+          } else {
+            log(
+              "xApp Event received, not in xAppEvents",
+              _event.method,
+              xAppEvents
+            );
           }
-        } else {
-          log(
-            "xApp Event received, not in xAppEvents",
-            _event.method,
-            xAppEvents
-          );
         }
+      } catch (e) {
+        log(
+          "xApp Event received, cannot parse as JSON",
+          (e as Error).message
+        );
       }
     };
 

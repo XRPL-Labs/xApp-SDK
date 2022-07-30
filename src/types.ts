@@ -4,6 +4,9 @@ export interface xAppDomWindow {
   ReactNativeWebView?: {
     postMessage(message: any): void; // Required, Android doesn't accept 2nd argument
   };
+  parent?: {
+    postMessage(message: any, target: string): void; // Required, Android doesn't accept 2nd argument
+  };
 }
 
 export enum xAppEvents {
