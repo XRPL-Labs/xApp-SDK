@@ -115,15 +115,14 @@ const xAppActionAttempt = async (
       }
     }
 
+    const msgToPost = JSON.stringify({ command, ...(options || {}) })
+
     if (isSandbox) {
-      _window.parent?.postMessage(
-        JSON.stringify({ command, ...(options || {}) }),
-        "*"
-      );
+      _window.parent
+        ?.postMessage(msgToPost, "*");
     } else {
-      _window.ReactNativeWebView?.postMessage(
-        JSON.stringify({ command, ...(options || {}) })
-      );
+      _window.ReactNativeWebView
+        ?.postMessage(msgToPost);
     }
     log("xAppActionAttempt Success", command, options);
 
