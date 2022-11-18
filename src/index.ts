@@ -1,5 +1,4 @@
 import { EventEmitter } from "events";
-import { debug as Debug } from "debug";
 
 import {
   AnyJson,
@@ -20,31 +19,33 @@ import {
 
 export * from "./types";
 
-localStorage.debug = "xapp*";
+// localStorage.debug = "xapp*";
 
-const docMinAliveSec = 1
+const docMinAliveSec = 1;
 const attemptMs = 250;
 const attemptDuration = 2000;
 
 const appStart = Number(new Date());
 
-Debug.log = console.log.bind(console);
-const log = Debug("xapp");
-
 let documentIsReady: (value?: unknown) => void;
 const documentReadyPromise = new Promise((resolve) => {
   documentIsReady = (value) => {
-    log("Doc Ready...");
+    console.log("Doc Ready...");
     const timeSinceDocLoad = (Number(new Date()) - appStart) / 1000;
     if (timeSinceDocLoad < docMinAliveSec /* Seconds */) {
       // Stall
-      log("Doc not alive >= " + docMinAliveSec + " sec, stalling for " + (docMinAliveSec - timeSinceDocLoad));
+      console.log(
+        "Doc not alive >= " +
+          docMinAliveSec +
+          " sec, stalling for " +
+          (docMinAliveSec - timeSinceDocLoad)
+      );
       setTimeout(function () {
         resolve(value);
       }, (docMinAliveSec - timeSinceDocLoad) * 1000);
     } else {
       // Go ahead
-      log("Doc alive " + docMinAliveSec + "+ sec, go ahead");
+      console.log("Doc alive " + docMinAliveSec + "+ sec, go ahead");
       resolve(value);
     }
   };
@@ -52,20 +53,20 @@ const documentReadyPromise = new Promise((resolve) => {
 
 documentReadyPromise
   .then(() => {
-    log("documentReadyPromise resolved");
+    console.log("documentReadyPromise resolved");
   })
   .catch((e) => {
-    log(e);
+    console.log(e);
   });
 
 document.addEventListener("readystatechange", (event) => {
-  log("(readystatechange: [ " + document.readyState + " ])");
+  console.log("(readystatechange: [ " + document.readyState + " ])");
   if (document.readyState === "complete") {
     documentIsReady();
   }
 });
 
-log("Loading xApp SDK");
+console.log("Loading xApp SDK");
 
 export declare interface xApp {
   on<U extends keyof xAppEvent>(event: U, listener: xAppEvent[U]): this;
@@ -77,10 +78,10 @@ export declare interface xApp {
 }
 
 let _window = window as xAppDomWindow;
-let isSandbox = false
+let isSandbox = false;
 if (_window?.parent) {
   // XAPP PROXY
-  _window.parent?.postMessage('XAPP_PROXY_INIT', '*');
+  _window.parent?.postMessage("XAPP_PROXY_INIT", "*");
 }
 
 const xAppActionAttempt = async (
@@ -103,7 +104,7 @@ const xAppActionAttempt = async (
       // Close command awaits app nav state, min sec. alive 4
       const minAliveTimeSec = 4;
       if (timeSinceDocLoad < minAliveTimeSec) {
-        log(
+        console.log(
           "xApp close, doc alive < minAliveTimeSec, stall: " +
             (minAliveTimeSec - timeSinceDocLoad)
         );
@@ -115,22 +116,20 @@ const xAppActionAttempt = async (
       }
     }
 
-    const msgToPost = JSON.stringify({ command, ...(options || {}) })
+    const msgToPost = JSON.stringify({ command, ...(options || {}) });
 
     if (isSandbox) {
-      _window.parent
-        ?.postMessage(msgToPost, "*");
+      _window.parent?.postMessage(msgToPost, "*");
     } else {
-      _window.ReactNativeWebView
-        ?.postMessage(msgToPost);
+      _window.ReactNativeWebView?.postMessage(msgToPost);
     }
-    log("xAppActionAttempt Success", command, options);
+    console.log("xAppActionAttempt Success", command, options);
 
     return true;
   } else {
     if (attempt * attemptMs < attemptDuration) {
       // Another attempt
-      log(
+      console.log(
         "xAppActionAttempt Attempt " + attempt + " » Retry",
         command,
         options
@@ -141,7 +140,7 @@ const xAppActionAttempt = async (
       return xAppActionAttempt(command, options, attempt + 1);
     } else {
       // Nope
-      log(
+      console.log(
         "xAppActionAttempt Failed after attempt " + attempt,
         command,
         options
@@ -156,37 +155,39 @@ const xAppActionAttempt = async (
   }
 };
 
-export class xApp extends EventEmitter {
+class xAppThread extends EventEmitter {
   constructor() {
     super();
 
-    log("Constructed new xApp object");
-    log(
-      "(Document ready state during consteructing: " + document.readyState + ")"
-    );
     if (document.readyState === "complete") {
       documentIsReady();
     }
 
     const eventHandler = (event: Event): void => {
-      const rEvent = (event as xAppReceivedEvent)
+      const rEvent = event as xAppReceivedEvent;
 
-      if (typeof rEvent?.data === "string" && rEvent.data === "XAPP_PROXY_INIT_ACK") {
-        log("xApp Proxy ACK received, switching to PROXY (SANDBOX) mode");
-        isSandbox = true
-        return
+      if (
+        typeof rEvent?.data === "string" &&
+        rEvent.data === "XAPP_PROXY_INIT_ACK"
+      ) {
+        console.log(
+          "xApp Proxy ACK received, switching to PROXY (SANDBOX) mode"
+        );
+        isSandbox = true;
+        return;
       }
 
       try {
-        const _event: xAppReceivedEventData = JSON.parse(
-          rEvent?.data || "{}"
-        );
+        const _event: xAppReceivedEventData = JSON.parse(rEvent?.data || "{}");
 
-        log({ _event });
+        console.log({ _event });
 
         if (typeof _event === "object" && _event !== null) {
-          if (typeof _event.method === "string" && _event.method in xAppEvents) {
-            log("xApp Event received", _event.method, _event);
+          if (
+            typeof _event.method === "string" &&
+            _event.method in xAppEvents
+          ) {
+            console.log("xApp Event received", _event.method, _event);
 
             const method = _event.method;
             delete _event.method;
@@ -206,7 +207,7 @@ export class xApp extends EventEmitter {
                 break;
             }
           } else {
-            log(
+            console.log(
               "xApp Event received, not in xAppEvents",
               _event.method,
               xAppEvents
@@ -214,7 +215,7 @@ export class xApp extends EventEmitter {
           }
         }
       } catch (e) {
-        log(
+        console.log(
           "xApp Event received, cannot parse as JSON",
           (e as Error).message
         );
@@ -297,5 +298,76 @@ export class xApp extends EventEmitter {
     customCommandOptions?: AnyJson
   ): Promise<boolean | Error> {
     return xAppActionAttempt(customCommand, customCommandOptions);
+  }
+}
+
+const thread = (_xApp?: xAppThread): xAppThread => {
+  let attached = false;
+  if (_xApp) {
+    if (typeof _window === "object") {
+      if (typeof (_window as any)._xAppSdk === "undefined") {
+        (_window as any)._xAppSdk = _xApp;
+        attached = true;
+      }
+    }
+  }
+
+  console.log(attached ? "xAppSdk attached to window" : "xAppSdk from thread");
+
+  return (_window as any)._xAppSdk;
+};
+
+export class xApp {
+  constructor() {
+    thread(new xAppThread());
+  }
+
+  on<U extends keyof xAppEvent>(event: U, listener: xAppEvent[U]) {
+    thread().on(event, listener);
+    return this;
+  }
+
+  off<U extends keyof xAppEvent>(event: U, listener: xAppEvent[U]) {
+    thread().off(event, listener);
+    return this;
+  }
+
+  navigate(navigateOptions: xAppActionNavigate): Promise<boolean | Error> {
+    return thread().navigate(navigateOptions);
+  }
+
+  openSignRequest(
+    openSignRequestOptions: xAppActionOpenSignRequest
+  ): Promise<boolean | Error> {
+    return thread().openSignRequest(openSignRequestOptions);
+  }
+
+  selectDestination(): Promise<boolean | Error> {
+    return thread().selectDestination();
+  }
+
+  openBrowser(
+    openBrowserOptions: xAppActionOpenBrowser
+  ): Promise<boolean | Error> {
+    return thread().openBrowser(openBrowserOptions);
+  }
+
+  scanQr(): Promise<boolean | Error> {
+    return thread().scanQr();
+  }
+
+  tx(txOptions: xAppActionTxDetails): Promise<boolean | Error> {
+    return thread().tx(txOptions);
+  }
+
+  close(closeOptions?: xAppActionClose): Promise<boolean | Error> {
+    return thread().close(closeOptions);
+  }
+
+  customCommand(
+    customCommand: string,
+    customCommandOptions?: AnyJson
+  ): Promise<boolean | Error> {
+    return thread().customCommand(customCommand, customCommandOptions);
   }
 }
