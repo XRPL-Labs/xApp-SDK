@@ -312,14 +312,20 @@ const thread = (_xApp?: xAppThread): xAppThread => {
     }
   }
 
-  console.log(attached ? "xAppSdk attached to window" : "xAppSdk from thread");
+  const instance = (_window as any)._xAppSdk;
 
-  return (_window as any)._xAppSdk;
+  if (instance && attached) {
+    console.log("xAppSdk attached to window");
+  }
+
+  return instance;
 };
 
 export class xApp {
   constructor() {
-    thread(new xAppThread());
+    if (!thread()) {
+      thread(new xAppThread());
+    }
   }
 
   on<U extends keyof xAppEvent>(event: U, listener: xAppEvent[U]) {
