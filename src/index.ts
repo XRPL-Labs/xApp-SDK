@@ -59,14 +59,18 @@ documentReadyPromise
     console.log(e);
   });
 
-document.addEventListener("readystatechange", (event) => {
-  console.log("(readystatechange: [ " + document.readyState + " ])");
-  if (document.readyState === "complete") {
-    documentIsReady();
-  }
-});
+if (typeof document !== "undefined") {
+  document.addEventListener("readystatechange", (event) => {
+    console.log("(readystatechange: [ " + document.readyState + " ])");
+    if (document.readyState === "complete") {
+      documentIsReady();
+    }
+  });
+}
 
-console.log("Loading xApp SDK");
+if (typeof window !== "undefined") {
+  console.log("Loading xApp SDK");
+}
 
 export declare interface xApp {
   on<U extends keyof xAppEvent>(event: U, listener: xAppEvent[U]): this;
@@ -77,7 +81,7 @@ export declare interface xApp {
   // ): boolean;
 }
 
-let _window = window as xAppDomWindow;
+let _window = (typeof window !== "undefined" ? window : {}) as xAppDomWindow;
 let isSandbox = false;
 if (_window?.parent) {
   // XAPP PROXY
