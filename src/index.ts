@@ -312,7 +312,7 @@ const thread = (_xApp?: xAppThread): xAppThread => {
     }
   }
 
-  const instance = (_window as any)._xAppSdk;
+  const instance = (_window as any)?._xAppSdk;
 
   if (instance && attached) {
     console.log("xAppSdk attached to window");
@@ -323,57 +323,102 @@ const thread = (_xApp?: xAppThread): xAppThread => {
 
 export class xApp {
   constructor() {
+    if (typeof window === "undefined" || typeof document === "undefined") {
+      return;
+    }
     if (!thread()) {
       thread(new xAppThread());
     }
   }
 
   on<U extends keyof xAppEvent>(event: U, listener: xAppEvent[U]) {
-    thread().on(event, listener);
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    t.on(event, listener);
     return this;
   }
 
   off<U extends keyof xAppEvent>(event: U, listener: xAppEvent[U]) {
-    thread().off(event, listener);
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    t.off(event, listener);
     return this;
   }
 
-  navigate(navigateOptions: xAppActionNavigate): Promise<boolean | Error> {
-    return thread().navigate(navigateOptions);
+  navigate(
+    navigateOptions: xAppActionNavigate
+  ): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.navigate(navigateOptions);
   }
 
   openSignRequest(
     openSignRequestOptions: xAppActionOpenSignRequest
-  ): Promise<boolean | Error> {
-    return thread().openSignRequest(openSignRequestOptions);
+  ): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.openSignRequest(openSignRequestOptions);
   }
 
-  selectDestination(): Promise<boolean | Error> {
-    return thread().selectDestination();
+  selectDestination(): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.selectDestination();
   }
 
   openBrowser(
     openBrowserOptions: xAppActionOpenBrowser
-  ): Promise<boolean | Error> {
-    return thread().openBrowser(openBrowserOptions);
+  ): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.openBrowser(openBrowserOptions);
   }
 
-  scanQr(): Promise<boolean | Error> {
-    return thread().scanQr();
+  scanQr(): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.scanQr();
   }
 
-  tx(txOptions: xAppActionTxDetails): Promise<boolean | Error> {
-    return thread().tx(txOptions);
+  tx(txOptions: xAppActionTxDetails): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.tx(txOptions);
   }
 
-  close(closeOptions?: xAppActionClose): Promise<boolean | Error> {
-    return thread().close(closeOptions);
+  close(closeOptions?: xAppActionClose): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.close(closeOptions);
   }
 
   customCommand(
     customCommand: string,
     customCommandOptions?: AnyJson
-  ): Promise<boolean | Error> {
-    return thread().customCommand(customCommand, customCommandOptions);
+  ): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.customCommand(customCommand, customCommandOptions);
   }
 }
