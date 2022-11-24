@@ -219,10 +219,10 @@ class xAppThread extends EventEmitter {
           }
         }
       } catch (e) {
-        console.log(
-          "xApp Event received, cannot parse as JSON",
-          (e as Error).message
-        );
+        const emessage = (e as Error)?.message || "";
+        if (!emessage.match(/XAPP_PROXY_INIT/)) {
+          console.log("xApp Event received, cannot parse as JSON", emessage);
+        }
       }
     };
 
