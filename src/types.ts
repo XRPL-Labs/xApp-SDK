@@ -74,6 +74,13 @@ export interface xAppActionOpenBrowser {
   url: string;
 }
 
+export interface xAppActionShare {
+  // command: share
+  title?: string;
+  text?: string;
+  url?: string;
+}
+
 export interface xAppActionClose {
   // command: close
   refreshEvents?: boolean;

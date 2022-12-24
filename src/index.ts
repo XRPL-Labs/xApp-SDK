@@ -15,6 +15,7 @@ import {
   qrEventData,
   destinationEventData,
   xAppDomWindow,
+  xAppActionShare,
 } from "./types";
 
 export * from "./types";
@@ -94,6 +95,7 @@ const xAppActionAttempt = async (
     | xAppActionNavigate
     | xAppActionOpenSignRequest
     | xAppActionOpenBrowser
+    | xAppActionShare
     | xAppActionClose
     | xAppActionTxDetails
     | AnyJson,
@@ -279,6 +281,21 @@ class xAppThread extends EventEmitter {
     return xAppActionAttempt("openBrowser", openBrowserOptions);
   }
 
+  share(shareOptions: xAppActionShare): Promise<boolean | Error> {
+    if (
+      typeof shareOptions?.url !== "string" &&
+      typeof shareOptions?.title !== "string" &&
+      typeof shareOptions?.text !== "string"
+    ) {
+      return Promise.reject(
+        new Error(
+          "xApp.openBrowser: Invalid argument: `title` / `text` / `url`"
+        )
+      );
+    }
+    return xAppActionAttempt("share", shareOptions);
+  }
+
   scanQr(): Promise<boolean | Error> {
     return xAppActionAttempt("scanQr");
   }
@@ -389,6 +406,14 @@ export class xApp {
       return;
     }
     return t.openBrowser(openBrowserOptions);
+  }
+
+  share(shareOptions: xAppActionShare): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.share(shareOptions);
   }
 
   scanQr(): Promise<boolean | Error> | void {
