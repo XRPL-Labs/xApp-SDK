@@ -25,7 +25,8 @@
     "dist/browser.min.js"
   ],
   "dependencies": {
-    "debug": "^4.1.1"
+    "debug": "^4.1.1",
+    "events": "^3.3.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
