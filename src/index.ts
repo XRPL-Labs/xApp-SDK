@@ -289,7 +289,7 @@ class xAppThread extends EventEmitter {
     ) {
       return Promise.reject(
         new Error(
-          "xApp.openBrowser: Invalid argument: `title` / `text` / `url`"
+          "xApp.share: Invalid argument: `title` / `text` / `url`"
         )
       );
     }
