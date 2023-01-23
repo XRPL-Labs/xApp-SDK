@@ -1,5 +1,7 @@
 # Xumm xApp Javascript SDK [![npm version](https://badge.fury.io/js/xumm-xapp-sdk.svg)](https://badge.fury.io/js/xumm-xapp-sdk)
 
+#### Part of the "Xumm Universal SDK", which is the preferred way of interacting with the Xumm ecosystem from JS/TS environments: https://www.npmjs.com/package/xumm - https://github.com/XRPL-Labs/Xumm-Universal-SDK
+
 Easily interact with Xumm from your xApp (frontend).
 
 Documentation: see: https://xumm.readme.io/docs/xapp-xumm-ui-interaction
