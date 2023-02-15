@@ -379,13 +379,16 @@ export class xApp {
   }
 
   openSignRequest(
-    openSignRequestOptions: xAppActionOpenSignRequest
+    openSignRequestOptions: xAppActionOpenSignRequest | null | undefined
   ): Promise<boolean | Error> | void {
     const t = thread();
-    if (!t) {
-      return;
+    if (t) {
+      if (openSignRequestOptions?.uuid) {
+        return t.openSignRequest(openSignRequestOptions);
+      }
     }
-    return t.openSignRequest(openSignRequestOptions);
+
+    return;
   }
 
   selectDestination(): Promise<boolean | Error> | void {
