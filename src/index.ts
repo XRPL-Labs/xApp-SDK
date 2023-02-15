@@ -288,9 +288,7 @@ class xAppThread extends EventEmitter {
       typeof shareOptions?.text !== "string"
     ) {
       return Promise.reject(
-        new Error(
-          "xApp.share: Invalid argument: `title` / `text` / `url`"
-        )
+        new Error("xApp.share: Invalid argument: `title` / `text` / `url`")
       );
     }
     return xAppActionAttempt("share", shareOptions);
