@@ -64,12 +64,12 @@ export interface xAppActionNavigate extends AnyJson {
   xApp: string;
 }
 
-export interface xAppActionOpenSignRequest {
+export interface xAppActionOpenSignRequest extends AnyJson {
   // command: openSignRequest
   uuid: string;
 }
 
-export interface xAppActionOpenBrowser {
+export interface xAppActionOpenBrowser extends AnyJson {
   // command: openBrowser
   url: string;
 }
