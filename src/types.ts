@@ -76,9 +76,7 @@ export interface xAppActionOpenBrowser extends AnyJson {
 
 export interface xAppActionShare {
   // command: share
-  title?: string;
   text?: string;
-  url?: string;
 }
 
 export interface xAppActionClose {
