@@ -23,7 +23,7 @@ export * from "./types";
 
 // localStorage.debug = "xapp*";
 
-const docMinAliveSec = 1;
+const docMinAliveSec = 0.25;
 const attemptMs = 250;
 const attemptDuration = 2000;
 
