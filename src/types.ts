@@ -90,6 +90,9 @@ export interface xAppActionTxDetails {
   account: string;
 }
 
+export interface xAppActionReady {
+}
+
 // export interface xAppActionSelectDestination {
 //   // command: selectDestination
 // }

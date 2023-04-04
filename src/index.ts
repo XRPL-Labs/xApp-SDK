@@ -8,6 +8,7 @@ import {
   xAppActionOpenBrowser,
   xAppActionTxDetails,
   xAppActionClose,
+  xAppActionReady,
   xAppEvents,
   xAppReceivedEvent,
   xAppReceivedEventData,
@@ -98,6 +99,7 @@ const xAppActionAttempt = async (
     | xAppActionShare
     | xAppActionClose
     | xAppActionTxDetails
+    | xAppActionReady
     | AnyJson,
   attempt = 0
 ): Promise<boolean | Error> => {
@@ -308,6 +310,10 @@ class xAppThread extends EventEmitter {
     return xAppActionAttempt("close", closeOptions);
   }
 
+  ready(): Promise<boolean | Error> {
+    return xAppActionAttempt("ready");
+  }
+
   customCommand(
     customCommand: string,
     customCommandOptions?: AnyJson
@@ -435,6 +441,14 @@ export class xApp {
       return;
     }
     return t.close(closeOptions);
+  }
+
+  ready(): Promise<boolean | Error> | void {
+    const t = thread();
+    if (!t) {
+      return;
+    }
+    return t.ready();
   }
 
   customCommand(
