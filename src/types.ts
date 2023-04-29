@@ -90,12 +90,12 @@ export interface xAppActionTxDetails {
   account: string;
 }
 
-export interface xAppActionReady {
-}
+export interface xAppActionReady {}
 
-// export interface xAppActionSelectDestination {
-//   // command: selectDestination
-// }
+export interface xAppActionSelectDestination {
+  // command: selectDestination
+  ignoreDestinationTag?: boolean;
+}
 
 // export interface xAppActionScanQr {
 //   // command: scanQr

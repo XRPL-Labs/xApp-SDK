@@ -7,6 +7,7 @@ import {
   xAppActionOpenSignRequest,
   xAppActionOpenBrowser,
   xAppActionTxDetails,
+  xAppActionSelectDestination,
   xAppActionClose,
   xAppActionReady,
   xAppEvents,
@@ -268,8 +269,10 @@ class xAppThread extends EventEmitter {
     return xAppActionAttempt("openSignRequest", openSignRequestOptions);
   }
 
-  selectDestination(): Promise<boolean | Error> {
-    return xAppActionAttempt("selectDestination");
+  selectDestination(
+    selectDestinationOptions?: xAppActionSelectDestination
+  ): Promise<boolean | Error> {
+    return xAppActionAttempt("selectDestination", selectDestinationOptions);
   }
 
   openBrowser(
@@ -285,9 +288,7 @@ class xAppThread extends EventEmitter {
 
   share(shareOptions: xAppActionShare): Promise<boolean | Error> {
     if (typeof shareOptions?.text !== "string") {
-      return Promise.reject(
-        new Error("xApp.share: Invalid argument: `text`")
-      );
+      return Promise.reject(new Error("xApp.share: Invalid argument: `text`"));
     }
     return xAppActionAttempt("share", shareOptions);
   }
@@ -393,12 +394,14 @@ export class xApp {
     return;
   }
 
-  selectDestination(): Promise<boolean | Error> | void {
+  selectDestination(
+    selectDestinationOptions?: xAppActionSelectDestination
+  ): Promise<boolean | Error> | void {
     const t = thread();
     if (!t) {
       return;
     }
-    return t.selectDestination();
+    return t.selectDestination(selectDestinationOptions);
   }
 
   openBrowser(
