@@ -16,7 +16,7 @@ export enum xAppEvents {
 }
 
 export interface qrEventData {
-  contents?: null;
+  qrContents?: null;
   reason: "USER_CLOSE" | "INVALID_QR" | "SCANNED";
 }
 
