@@ -18,6 +18,7 @@ import {
   destinationEventData,
   xAppDomWindow,
   xAppActionShare,
+  xAppEnvironment,
 } from "./types";
 
 export * from "./types";
@@ -240,6 +241,15 @@ class xAppThread extends EventEmitter {
     }
   }
 
+  getEnvironment(): xAppEnvironment {
+    const t = thread();
+    if (!t) {
+      return { version: "", ott: "" };
+    }
+
+    return t.getEnvironment();
+  }
+
   navigate(navigateOptions: xAppActionNavigate): Promise<boolean | Error> {
     if (typeof navigateOptions?.xApp !== "string") {
       return Promise.reject(
@@ -344,13 +354,43 @@ const thread = (_xApp?: xAppThread): xAppThread => {
 };
 
 export class xApp {
+  private xummEnvironment: xAppEnvironment = {
+    version: "",
+    ott: "",
+  };
+
   constructor() {
     if (typeof window === "undefined" || typeof document === "undefined") {
       return;
     }
+
+    if (typeof navigator !== "undefined") {
+      if (typeof navigator?.userAgent === "string") {
+        const uaMatch = navigator.userAgent
+          .trim()
+          .match(
+            /xumm\/xapp:([0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}).*ott:([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})/
+          );
+        if (uaMatch) {
+          this.xummEnvironment.version = uaMatch[1];
+          this.xummEnvironment.ott = uaMatch[2];
+        }
+      }
+    }
+
+    if (this.xummEnvironment.version === "") {
+      console.log(
+        "Warning: Xumm Version could not be retrieved from User Agent, possibly not loaded in xApp context?"
+      );
+    }
+
     if (!thread()) {
       thread(new xAppThread());
     }
+  }
+
+  getEnvironment(): xAppEnvironment {
+    return this.xummEnvironment;
   }
 
   on<U extends keyof xAppEvent>(event: U, listener: xAppEvent[U]) {

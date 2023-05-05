@@ -97,6 +97,11 @@ export interface xAppActionSelectDestination {
   ignoreDestinationTag?: boolean;
 }
 
+export interface xAppEnvironment {
+  version: string;
+  ott: string;
+}
+
 // export interface xAppActionScanQr {
 //   // command: scanQr
 // }
