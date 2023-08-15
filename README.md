@@ -4,7 +4,7 @@
 
 Easily interact with Xumm from your xApp (frontend).
 
-Documentation: see: https://xumm.readme.io/docs/xapp-xumm-ui-interaction
+Documentation: see: [https://xumm.readme.io/docs/xapp-xumm-ui-interaction](https://docs.xumm.dev/environments/xapps-dapps/xumm-ui-interaction)
 
 NPM:
 [https://www.npmjs.com/package/xumm-xapp-sdk](https://www.npmjs.com/package/xumm-xapp-sdk)
