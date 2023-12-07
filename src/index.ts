@@ -189,8 +189,7 @@ class xAppThread extends EventEmitter {
 
       try {
         const _event: xAppReceivedEventData = JSON.parse(rEvent?.data || "{}");
-
-        console.log({ _event });
+        console.log('_event (typeof, {_event}) ', typeof _event, { _event });
 
         if (typeof _event === "object" && _event !== null) {
           if (
@@ -218,9 +217,8 @@ class xAppThread extends EventEmitter {
             }
           } else {
             console.log(
-              "xApp Event received, not in xAppEvents",
-              _event.method,
-              xAppEvents
+              "xApp Event received, not in xAppEvents:",
+              _event.method
             );
           }
         }

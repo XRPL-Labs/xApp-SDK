@@ -10,6 +10,7 @@ export interface xAppDomWindow {
 }
 
 export enum xAppEvents {
+  ready = "ready",
   scanQr = "scanQr",
   payloadResolved = "payloadResolved",
   selectDestination = "selectDestination",
