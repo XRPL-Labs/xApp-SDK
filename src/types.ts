@@ -14,6 +14,7 @@ export enum xAppEvents {
   scanQr = "scanQr",
   payloadResolved = "payloadResolved",
   selectDestination = "selectDestination",
+  networkSwitch = "networkSwitch",
 }
 
 export interface qrEventData {
@@ -96,6 +97,11 @@ export interface xAppActionReady {}
 export interface xAppActionSelectDestination {
   // command: selectDestination
   ignoreDestinationTag?: boolean;
+}
+
+export interface xAppNetworkSwitch {
+  // command: selectDestination
+  network?: string;
 }
 
 export interface xAppEnvironment {

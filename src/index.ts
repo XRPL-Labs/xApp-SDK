@@ -15,6 +15,7 @@ import {
   xAppReceivedEventData,
   payloadEventData,
   qrEventData,
+  xAppNetworkSwitch,
   destinationEventData,
   xAppDomWindow,
   xAppActionShare,
@@ -189,7 +190,7 @@ class xAppThread extends EventEmitter {
 
       try {
         const _event: xAppReceivedEventData = JSON.parse(rEvent?.data || "{}");
-        console.log('_event (typeof, {_event}) ', typeof _event, { _event });
+        console.log("_event (typeof, {_event}) ", typeof _event, { _event });
 
         if (typeof _event === "object" && _event !== null) {
           if (
@@ -207,6 +208,12 @@ class xAppThread extends EventEmitter {
                 break;
               case String(xAppEvents.scanQr):
                 this.emit("qr", _event as unknown as qrEventData);
+                break;
+              case String(xAppEvents.networkSwitch):
+                this.emit(
+                  "networkswitch",
+                  _event as unknown as xAppNetworkSwitch
+                );
                 break;
               case String(xAppEvents.selectDestination):
                 this.emit(
