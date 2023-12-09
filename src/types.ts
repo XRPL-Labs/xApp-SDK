@@ -59,6 +59,7 @@ export interface xAppEvent {
   qr: (data: qrEventData) => void;
   payload: (data: payloadEventData) => void;
   destination: (data: destinationEventData) => void;
+  networkswitch: (data: xAppNetworkSwitch) => void;
 }
 
 export interface xAppActionNavigate extends AnyJson {
