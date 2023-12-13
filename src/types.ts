@@ -24,6 +24,7 @@ export interface qrEventData {
 
 export interface payloadEventData {
   reason: "DECLINED" | "SIGNED";
+  uuid: string;
 }
 
 export interface destinationEventData {
