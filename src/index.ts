@@ -379,6 +379,18 @@ export class xApp {
         if (uaMatch) {
           this.xummEnvironment.version = uaMatch[1];
           this.xummEnvironment.ott = uaMatch[2];
+        } else {
+          // Mocked OTT (e.g. Apple review): treat browser as xApp context
+          const mockOtt = "00000000-1337-4000-9000-000000000000";
+          const xAppToken = (
+            new URLSearchParams(location.search || "").get("xAppToken") || ""
+          )
+            .trim()
+            .toLowerCase();
+          if (xAppToken === mockOtt) {
+            this.xummEnvironment.version = "9.9.9";
+            this.xummEnvironment.ott = mockOtt;
+          }
         }
       }
     }
