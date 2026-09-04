@@ -379,24 +379,23 @@ export class xApp {
         if (uaMatch) {
           this.xummEnvironment.version = uaMatch[1];
           this.xummEnvironment.ott = uaMatch[2];
-        } else if (typeof window?.URLSearchParams !== "undefined") {
+        } else {
           // Mocked OTT (e.g. Apple review): treat browser as xApp context
           const mockOtt = "00000000-1337-4000-9000-000000000000";
           const xAppToken = (
-            new window.URLSearchParams(window.location?.search || "").get(
-              "xAppToken"
-            ) || ""
+            new URLSearchParams(location.search || "").get("xAppToken") || ""
           )
             .trim()
             .toLowerCase();
           if (xAppToken === mockOtt) {
+            this.xummEnvironment.version = "9.9.9";
             this.xummEnvironment.ott = mockOtt;
           }
         }
       }
     }
 
-    if (this.xummEnvironment.version === "" && this.xummEnvironment.ott === "") {
+    if (this.xummEnvironment.version === "") {
       console.log(
         "Warning: Xumm Version could not be retrieved from User Agent, possibly not loaded in xApp context?"
       );
