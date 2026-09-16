@@ -11,7 +11,7 @@ NPM:
 
 ### CDN (browser):
 
-A browserified version (latest) is available at [JSDelivr](https://cdn.jsdelivr.net/npm/xumm-xapp-sdk/dist/browser.min.js) & direclty from the `xumm.app` domain:
+A browserified version (latest) is available at [JSDelivr](https://cdn.jsdelivr.net/npm/xumm-xapp-sdk/dist/browser.min.js) & directly from the `xumm.app` domain:
 
 ```html
 <script src="https://xumm.app/assets/cdn/xumm-xapp-sdk.min.js"></script>
